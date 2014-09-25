@@ -1,34 +1,3 @@
-"use strict";
-
-var AJAX = {
-
-	request: function(method, path, data, callback) {
-		var request = new XMLHttpRequest();
-		request.onreadystatechange = function() {
-			if (request.readyState !== 4 || request.status !== 200) {return;} //TODO: better error handling
-			var stringResponse = request.responseText,
-				response = JSON.parse(stringResponse);
-			callback(response);
-		};
-		request.open(method, path, true);
-		request.send(data);
-	},
-
-	jsonp: function(url, callback) {
-		var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-		window[callbackName] = function(data) {
-			delete window[callbackName];
-			document.body.removeChild(script);
-			callback(data);
-		};
-
-		var script = document.createElement('script');
-		script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
-		document.body.appendChild(script);
-	}
-
-};
-
 var Social = {
 
 	Config: {
@@ -70,23 +39,22 @@ var Social = {
 			}(document, 'script', 'facebook-jssdk'));
 		},
 
-		shareToFacebook: function(callback) {
+		shareToFacebook: function() {
 			var pageURL = window.location.href;
 			
 			FB.ui({
 				method: 'share',
 				href: pageURL
-			}, callback || function(response){
+			}, function(response){
 				console.log(response);
 			});
 		},
 
 		getFBShareCount: function(callback) {
 			var pageURL = window.location.href,
-				ajaxURL = 'http://graph.facebook.com/' + pageURL,
-				ajaxURL = encodeURIComponent(ajaxURL);
+				ajaxURL = encodeURIComponent('http://graph.facebook.com/' + pageURL);
 
-			AJAX.request('GET', ajaxURL, null, callback || function(response){
+			Social.AJAX.request('GET', ajaxURL, null, callback || function(response){
 				console.log(response);
 				console.log(response.shares);
 			});
@@ -122,10 +90,9 @@ var Social = {
 
 		getPinCount: function(callback) {
 			var pageURL = window.location.href,
-				ajaxURL = 'http://api.pinterest.com/v1/urls/count.json?url=' + pageURL,
-				ajaxURL = encodeURIComponent(ajaxURL);
+				ajaxURL = encodeURIComponent('http://api.pinterest.com/v1/urls/count.json?url=' + pageURL);
 
-			AJAX.jsonp(ajaxURL, callback || function(response){
+			Social.AJAX.jsonp(ajaxURL, callback || function(response){
 				console.log(response);
 				console.log(response.count);
 			});
@@ -162,7 +129,7 @@ var Social = {
 			var pageURL = window.location.href,
 				ajaxURL = 'http://urls.api.twitter.com/1/urls/count.json?url=' + pageURL;
 
-			AJAX.jsonp(ajaxURL, callback || function(response){
+			Social.AJAX.jsonp(ajaxURL, callback || function(response){
 				console.log(response);
 				console.log(response.count);
 			});
@@ -180,7 +147,6 @@ var Social = {
 
 		init: function() {
 			// As of this version of the code, there is no need to initialize
-			this.getGooglePlusShareCount();
 		},
 
 		shareToGooglePlus: function() {
@@ -191,12 +157,7 @@ var Social = {
 		},
 
 		getGooglePlusShareCount: function(callback) {
-			var pageURL = window.location.href,
-				ajaxURL = 'https://plusone.google.com/_/+1/fastbutton?url=' + encodeURIComponent(pageURL) + '&count=true';
-
-			AJAX.jsonp(ajaxURL, callback || function(response){
-				console.log(String(response));
-			});
+			//TODO: figure this out!
 		},
 
 		registerButton: function(element) {
@@ -204,8 +165,37 @@ var Social = {
 				element.addEventListener('click', this.shareToGooglePlus, false);
 		}
 
+	},
+
+	/* AJAX Utility */
+	AJAX: {
+	
+		request: function(method, path, data, callback) {
+			var request = new XMLHttpRequest();
+			request.onreadystatechange = function() {
+				if (request.readyState !== 4 || request.status !== 200) {return;} //TODO: better error handling
+				var stringResponse = request.responseText,
+					response = JSON.parse(stringResponse);
+				callback(response);
+			};
+			request.open(method, path, true);
+			request.send(data);
+		},
+
+		jsonp: function(url, callback) {
+			var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+			window[callbackName] = function(data) {
+				delete window[callbackName];
+				document.body.removeChild(script);
+				callback(data);
+			};
+
+			var script = document.createElement('script');
+			script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+			document.body.appendChild(script);
+		}
 	}
-}
+};
 
 Social.init({
 	FACEBOOK_APP_ID: '191408320869529',
