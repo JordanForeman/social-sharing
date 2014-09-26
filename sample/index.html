@@ -7,40 +7,36 @@
 
 	<div class="social">
 		<ul class="social-toolbar">
-			<li class="facebook facebook-share" data-count="339">
+			<li class="facebook facebook-share" 
+				data-share-url="http://www.jordanforeman.com">
 				<span class="icon-facebook"></span>
 				Share
 			</li>
-			<li class="pinterest pinterest-share" data-count="4235">
+			<li class="pinterest pinterest-share" 
+				data-share-url="http://www.jordanforeman.com/" 
+				data-share-description="This guy is super cool"
+				data-media-url="https://en.gravatar.com/userimage/25103068/a96fdb1702fbaec5d996950e0ee3a0bf.jpg?size=200">
 				<span class="icon-pinterest"></span>
 				Pin
 			</li>
-			<li class="email">
-				<span class="icon-envelope"></span>
-				Email
-			</li>
-			<li class="twitter twitter-share" data-count="45">
+			<li class="twitter twitter-share" 
+				data-share-url="http://www.jordanforeman.com/" 
+				data-share-description="This guy is super cool - ">
 				<span class="icon-twitter"></span>
 				Tweet
 			</li>
-			<li class="google-plus google-plus-share" data-count="22">
+			<li class="google-plus google-plus-share" data-count="">
 				<span class="icon-google-plus"></span>
 				Share
-			</li>
-			<li class="print">
-				<span class="icon-print"></span>
-			</li>
-			<li class="save">
-				<span class="icon-save"></span>
 			</li>
 		</ul>
 	</div>
 
-	<script type="text/javascript" src="../social.min.js"></script>
+	<script type="text/javascript" src="../social.js"></script>
 	<script type="text/javascript">
 
 	Social.init({
-		FACEBOOK_APP_ID: '191408320869529',
+		FACEBOOK_APP_ID: '191408320869529', // Don't abuse this please/thanks
 		TWITTER_ACCOUNT: 'jordanforeman'
 	});
 

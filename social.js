@@ -39,8 +39,8 @@ var Social = {
 			}(document, 'script', 'facebook-jssdk'));
 		},
 
-		shareToFacebook: function() {
-			var pageURL = window.location.href;
+		shareToFacebook: function(urlToShare) {
+			var pageURL = urlToShare || window.location.href;
 			
 			FB.ui({
 				method: 'share',
@@ -50,8 +50,8 @@ var Social = {
 			});
 		},
 
-		getFBShareCount: function(callback) {
-			var pageURL = window.location.href,
+		getFBShareCount: function(urlToCheck, callback) {
+			var pageURL = urlToCheck || window.location.href,
 				ajaxURL = encodeURIComponent('http://graph.facebook.com/' + pageURL);
 
 			Social.AJAX.request('GET', ajaxURL, null, callback || function(response){
@@ -60,9 +60,16 @@ var Social = {
 			});
 		},
 
+		shareEvent: function(event) {
+			var uiTriggerElement = this,
+				urlToShare = uiTriggerElement.getAttribute('data-share-url') || window.location.href;
+
+			Social.Facebook.shareToFacebook(urlToShare);
+		},
+
 		registerButton: function(element) {
 			if (element)
-				element.addEventListener('click', this.shareToFacebook, false);
+				element.addEventListener('click', this.shareEvent, false);
 		}
 	},
 
@@ -79,17 +86,13 @@ var Social = {
 			}(document));
 		},
 
-		shareToPinterest: function() {
-			var pageURL = window.location.href,
-				mediaURL = '', //TODO: get media url of item you wish to share
-				pinDescription = '', //TODO: get description text of page to share
-				shareURL = 'http://pinterest.com/pin/create/button/?url=' + pageURL + '&amp;media=' + mediaURL + '&amp;description=' + pinDescription;
-
+		shareToPinterest: function(urlToShare, mediaURL, pinDescription) {
+			var shareURL = 'http://pinterest.com/pin/create/button/?url=' + (urlToShare || window.location.href) + '&amp;media=' + (mediaURL || '') + '&amp;description=' + (pinDescription || '');
 			window.open(shareURL, '_blank', 'width=700, height=300');
 		},
 
-		getPinCount: function(callback) {
-			var pageURL = window.location.href,
+		getPinCount: function(urlToCheck, callback) {
+			var pageURL = urlToCheck || window.location.href,
 				ajaxURL = encodeURIComponent('http://api.pinterest.com/v1/urls/count.json?url=' + pageURL);
 
 			Social.AJAX.jsonp(ajaxURL, callback || function(response){
@@ -98,9 +101,18 @@ var Social = {
 			});
 		},
 
+		shareEvent: function(event) {
+			var uiTriggerElement = this,
+				urlToShare = uiTriggerElement.getAttribute('data-share-url') || window.location.href,
+				mediaURL = uiTriggerElement.getAttribute('data-media-url') || '',
+				description = uiTriggerElement.getAttribute('data-share-description') || '';
+
+			Social.Pinterest.shareToPinterest(urlToShare, mediaURL, description);
+		},
+
 		registerButton: function(element) {
 			if (element)
-				element.addEventListener('click', this.shareToPinterest, false);
+				element.addEventListener('click', this.shareEvent, false);
 		}
 	},
 
@@ -111,9 +123,8 @@ var Social = {
 			// As of this version of the code, there is no need to initialize
 		},
 
-		shareToTwitter: function() {
-			var pageURL = window.location.href,
-				description = null, //TODO: get the description
+		shareToTwitter: function(urlToShare, description) {
+			var pageURL = urlToShare || window.location.href,
 				shareURL = 'http://twitter.com/share?url=' + pageURL;
 
 			if (Social.Config.TWITTER_ACCOUNT)
@@ -125,8 +136,8 @@ var Social = {
 			window.open(shareURL, '_blank', 'width=500, height=300');
 		},
 
-		getTweetCount: function(callback) {
-			var pageURL = window.location.href,
+		getTweetCount: function(urlToCheck, callback) {
+			var pageURL = urlToCheck || window.location.href,
 				ajaxURL = 'http://urls.api.twitter.com/1/urls/count.json?url=' + pageURL;
 
 			Social.AJAX.jsonp(ajaxURL, callback || function(response){
@@ -135,9 +146,17 @@ var Social = {
 			});
 		},
 
+		shareEvent: function(event) {
+			var uiTriggerElement = this,
+				urlToShare = uiTriggerElement.getAttribute('data-share-url') || window.location.href,
+				description = uiTriggerElement.getAttribute('data-share-description') || '';
+
+			Social.Twitter.shareToTwitter(urlToShare, description);
+		},
+
 		registerButton: function(element) {
 			if (element)
-				element.addEventListener('click', this.shareToTwitter, false);
+				element.addEventListener('click', this.shareEvent, true);
 		}
 
 	},
@@ -149,8 +168,8 @@ var Social = {
 			// As of this version of the code, there is no need to initialize
 		},
 
-		shareToGooglePlus: function() {
-			var pageURL = window.location.href,
+		shareToGooglePlus: function(urlToShare) {
+			var pageURL = urlToShare || window.location.href,
 				shareURL = 'https://plus.google.com/share?url=' + pageURL;
 
 			window.open(shareURL, '_blank', 'width=500, height=300');
@@ -158,6 +177,13 @@ var Social = {
 
 		getGooglePlusShareCount: function(callback) {
 			//TODO: figure this out!
+		},
+
+		shareEvent: function(event) {
+			var uiTriggerElement = this,
+				urlToShare = uiTriggerElement.getAttribute('data-share-url') || window.location.href;
+
+			Social.GooglePlus.shareToGooglePlus(urlToShare);
 		},
 
 		registerButton: function(element) {
@@ -168,8 +194,7 @@ var Social = {
 	},
 
 	/* AJAX Utility */
-	AJAX: {
-	
+	AJAX: {	
 		request: function(method, path, data, callback) {
 			var request = new XMLHttpRequest();
 			request.onreadystatechange = function() {

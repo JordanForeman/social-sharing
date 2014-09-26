@@ -23,6 +23,8 @@ Social.init({
 });
 ```
 
+* Please note that these are the only two options necessary for this library at the time of this writing
+
 ### Custom Sharing Buttons
 
 After initializing, you can then register any HTML element you'd like as a share button. Because of how flexible this is, be careful to make any necessary UX considerations beforehand
@@ -40,6 +42,19 @@ Social.Twitter.registerButton(TwitterTweetButton);
 var GooglePlusShareButton = document.querySelector('.google-plus-share');
 Social.GooglePlus.registerButton(GooglePlusShareButton);
 ```
+
+### Configuring Share Buttons
+
+You can customize how your buttons share by using `data-*` parameters in your markup. The following outlines the options supported:
+
+Network | Data-Option | Description
+------- | ----------- | -----------
+Facebook| data-share-url | The url to share. Defaults to `window.location.href`
+Pinterest| data-share-url| The url to share. Defaults to `window.location.href`
+		| data-share-description| The default description of the pin. Can be edited by user before saving
+		| data-media-url | Url of the image to associate with a pin
+Twitter | data-share-url | The url to share. Defaults to `window.location.href`
+		| data-share-description | Default Tweet text that appears before link. Can be edited by user
 
 ### Getting Share Counts
 
