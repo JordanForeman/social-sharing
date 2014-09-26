@@ -188,7 +188,7 @@ var Social = {
 
 		registerButton: function(element) {
 			if (element)
-				element.addEventListener('click', this.shareToGooglePlus, false);
+				element.addEventListener('click', this.shareEvent, false);
 		}
 
 	},
