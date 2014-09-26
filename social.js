@@ -196,13 +196,3 @@ var Social = {
 		}
 	}
 };
-
-Social.init({
-	FACEBOOK_APP_ID: '191408320869529',
-	TWITTER_ACCOUNT: 'jordanforeman'
-});
-
-Social.Facebook.registerButton(document.querySelector('.facebook-share'));
-Social.Pinterest.registerButton(document.querySelector('.pinterest-share'));
-Social.Twitter.registerButton(document.querySelector('.twitter-share'));
-Social.GooglePlus.registerButton(document.querySelector('.google-plus-share'));
