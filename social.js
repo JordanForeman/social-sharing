@@ -39,12 +39,14 @@ var Social = {
 			}(document, 'script', 'facebook-jssdk'));
 		},
 
-		shareToFacebook: function(urlToShare) {
-			var pageURL = urlToShare || window.location.href;
-			
+		shareToFacebook: function(shareUrl, shareTitle, shareMedia, shareDescription) {
 			FB.ui({
-				method: 'share',
-				href: pageURL
+				method: 'feed',
+				name: shareTitle || '',
+				link: shareUrl,
+				picture: shareMedia || '',
+				caption: shareTitle || '',
+				description: shareDescription || ''
 			}, function(response){
 				console.log(response);
 			});
@@ -60,11 +62,14 @@ var Social = {
 			});
 		},
 
-		shareEvent: function(event) {
+		shareEvent: function() {
 			var uiTriggerElement = this,
-				urlToShare = uiTriggerElement.getAttribute('data-share-url') || window.location.href;
+				url = uiTriggerElement.getAttribute('data-share-url') || window.location.href,
+				title = uiTriggerElement.getAttribute('data-share-title') || '',
+				media = uiTriggerElement.getAttribute('data-share-media') || '',
+				description = uiTriggerElement.getAttribute('data-share-description') || '';
 
-			Social.Facebook.shareToFacebook(urlToShare);
+			Social.Facebook.shareToFacebook(url, title, media, description);
 		},
 
 		registerButton: function(element) {
@@ -101,7 +106,7 @@ var Social = {
 			});
 		},
 
-		shareEvent: function(event) {
+		shareEvent: function() {
 			var uiTriggerElement = this,
 				urlToShare = uiTriggerElement.getAttribute('data-share-url') || window.location.href,
 				mediaURL = uiTriggerElement.getAttribute('data-media-url') || '',
@@ -146,7 +151,7 @@ var Social = {
 			});
 		},
 
-		shareEvent: function(event) {
+		shareEvent: function() {
 			var uiTriggerElement = this,
 				urlToShare = uiTriggerElement.getAttribute('data-share-url') || window.location.href,
 				description = uiTriggerElement.getAttribute('data-share-description') || '';
@@ -177,9 +182,10 @@ var Social = {
 
 		getGooglePlusShareCount: function(callback) {
 			//TODO: figure this out!
+			callback();
 		},
 
-		shareEvent: function(event) {
+		shareEvent: function() {
 			var uiTriggerElement = this,
 				urlToShare = uiTriggerElement.getAttribute('data-share-url') || window.location.href;
 
